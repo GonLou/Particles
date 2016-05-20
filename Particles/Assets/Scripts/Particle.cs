@@ -4,14 +4,33 @@ using System.Collections;
 public class Particle
 {
 
-    struct pVector
-    {
-        Vector3 location;
-        float velocity;
-        float acceleration;
-    }
+    Vector3 location;
+    Vector3 velocity;
+    float acceleration;
 
     float lifeSpan;
+
+    float color;
+
+    public Particle(Vector3 location, Vector3 velocity, float acceleration, float lifeSpan, float color)
+    {
+        this.location = location;
+        this.velocity = velocity;
+        this.acceleration = acceleration;
+        if (!isDead()) this.lifeSpan = lifeSpan;
+        this.color = color;
+    }
+
+    public bool Update()
+    {
+        velocity = velocity - Environment.getInstance().Gravity
+                            + Environment.getInstance().Wind;
+        location = location + velocity;
+        lifeSpan--;
+        if (isDead())
+            return false;
+        return true;
+    }
 
     bool isDead()
     {
@@ -20,4 +39,5 @@ public class Particle
         else
             return false;
     }
+
 }
