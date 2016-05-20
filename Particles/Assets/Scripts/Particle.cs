@@ -3,16 +3,15 @@ using System.Collections;
 
 public class Particle
 {
-
     Vector3 location;
     Vector3 velocity;
     float acceleration;
 
     float lifeSpan;
 
-    float color;
+    Color color;
 
-    public Particle(Vector3 location, Vector3 velocity, float acceleration, float lifeSpan, float color)
+    public Particle(Vector3 location, Vector3 velocity, float acceleration, float lifeSpan, Color color)
     {
         this.location = location;
         this.velocity = velocity;
@@ -23,8 +22,8 @@ public class Particle
 
     public bool Update()
     {
-        velocity = velocity - Environment.getInstance().Gravity
-                            + Environment.getInstance().Wind;
+        velocity = velocity - Particles.Outside.getInstance().Gravity
+                            + Particles.Outside.getInstance().Wind;
         location = location + velocity;
         lifeSpan--;
         if (isDead())
@@ -32,7 +31,12 @@ public class Particle
         return true;
     }
 
-    bool isDead()
+    public Vector3 Location 
+    {
+        get {return location;}
+    }
+
+    public bool isDead()
     {
         if (lifeSpan < 0.0f)
             return true;
