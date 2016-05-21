@@ -1,21 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Main : MonoBehaviour {
 
-    public int maxParticlesNumber;
+    public int maxParticlesNumber = 500;
 
-    public bool isAutoFeed;
+    public bool isAutoFeed = true;
+
+    public GameObject prefabObject;
+
+    List<GameObject> particleObjects;
 
     Vector3 initialPosition;
 
     ArrayList particles = new ArrayList();
+    ArrayList objects = new ArrayList();
 
-	// Use this for initialization
-	void Start () {
-        maxParticlesNumber = 500;
-        isAutoFeed = true;
+    // Use this for initialization
+    void Start () {
         initialPosition = new Vector3();
+        particleObjects = new List<GameObject>();
+
+        Smoke();
     }
 	
 	// Update is called once per frame
@@ -28,14 +35,12 @@ public class Main : MonoBehaviour {
         {
             particle = (Particle)particles[i];
 
-            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            sphere.transform.position = particle.Location;
-
             if ((!particle.Update()) || (particle.isDead()))
             {
                 particles.RemoveAt(i);
                 i--;
                 count = particles.Count;
+                particleObjects.Remove(prefabObject);
             }
 
             if (count < maxParticlesNumber)
@@ -56,7 +61,6 @@ public class Main : MonoBehaviour {
 
     public Particle GenerateParticle()
     {
-
         Particle particle = new Particle(   initialPosition,
                                             new Vector3(Random.Range(-4.0F, 5.0F),
                                                         Random.Range(-10.0F, 10.0F),
@@ -64,6 +68,8 @@ public class Main : MonoBehaviour {
                                             Random.Range(-10.0F, 10.0F),
                                             Random.Range(-10.0F, 10.0F),
                                             Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f)   );
+
+        particleObjects.Add( (GameObject) Instanciate(prefabObject, particle.Location, Quaternion.Identity));
 
         return particle;
     }
