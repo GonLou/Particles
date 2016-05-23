@@ -69,7 +69,7 @@ public class Main : MonoBehaviour {
                                             Random.Range(-10.0F, 10.0F),
                                             Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f)   );
 
-        particleObjects.Add( (GameObject) Instanciate(prefabObject, particle.Location, Quaternion.Identity));
+        particleObjects.Add( (GameObject) Instantiate(prefabObject, particle.Location, Quaternion.identity));
 
         return particle;
     }
