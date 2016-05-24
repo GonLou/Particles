@@ -175,7 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxParticlesNumber: 10
   isAutoFeed: 1
-  prefabObject: {fileID: 104540, guid: afc5240cdde70f547b07f0f48ee8e76e, type: 2}
+  prefabObject: {fileID: 181868, guid: 8c674144afa67ab419c3b1b75e3ab229, type: 2}
 --- !u!4 &1092590848
 Transform:
   m_ObjectHideFlags: 0
@@ -183,7 +183,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1092590846}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -31.96}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -269,7 +269,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1802834719}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: -265.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

@@ -5,13 +5,13 @@ public class Particle
 {
     Vector3 location;
     Vector3 velocity;
-    float acceleration;
+    Vector3 acceleration;
 
     float lifeSpan;
 
     Color color;
 
-    public Particle(Vector3 location, Vector3 velocity, float acceleration, float lifeSpan, Color color)
+    public Particle(Vector3 location, Vector3 velocity, Vector3 acceleration, float lifeSpan, Color color)
     {
         this.location = location;
         this.velocity = velocity;
@@ -22,9 +22,9 @@ public class Particle
 
     public bool Update()
     {
-        velocity = velocity - Particles.Outside.getInstance().Gravity
+        velocity += acceleration - Particles.Outside.getInstance().Gravity
                             + Particles.Outside.getInstance().Wind;
-        location = location + velocity;
+        location += velocity;
         lifeSpan--;
         if (isDead())
             return false;
