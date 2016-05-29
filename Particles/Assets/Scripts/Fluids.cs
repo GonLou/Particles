@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Fluids : MonoBehaviour {
-    public Material fluidMat, GUImat;
+    public Material fluidMat, GUIMat;
 
     RenderTexture GUITexture, divergenceTexture, obstaclesTexture;
     RenderTexture[] velocityTexture, densityTexture, pressureTexture, temperatureTexture;
@@ -60,13 +60,28 @@ public class Fluids : MonoBehaviour {
         obstaclesTexture.Create();
 
         velocityTexture = new RenderTexture[2];
+        createMultiRenderTextures(velocityTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
         densityTexture = new RenderTexture[2];
+        createMultiRenderTextures(densityTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
         temperatureTexture = new RenderTexture[2];
+        createMultiRenderTextures(temperatureTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
         pressureTexture = new RenderTexture[2];
+        createMultiRenderTextures(pressureTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
 
         GUI.texture = GUITexture;
-        GUImat.SetTexture("Obstacles", obstaclesTexture);
+        GUIMat.SetTexture("Obstacles", obstaclesTexture);
 	}
+
+    void createMultiRenderTextures(RenderTexture[] texture, RenderTextureFormat format, FilterMode filter, TextureWrapMode wrap, RenderTextureReadWrite readWrite)
+    {
+        for (int i = 0; i < texture.Length; i++)
+        {
+            texture[i] = new RenderTexture((int)viewWidth, (int)viewHeight, 0, format, readWrite);
+            texture[i].filterMode = filter;
+            texture[i].wrapMode = wrap;
+            texture[i].Create();
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {
