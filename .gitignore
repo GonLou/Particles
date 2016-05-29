@@ -76,8 +76,8 @@ $RECYCLE.BIN/
 # =============== #
 # Unity generated #
 # =============== #
-Temp/
-Library/
+Particles/Temp/
+Particles/Library/
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
