@@ -78,6 +78,7 @@ $RECYCLE.BIN/
 # =============== #
 Temp/
 Library/
+Library/metadata/
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
