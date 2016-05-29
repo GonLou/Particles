@@ -21,8 +21,13 @@ public class Fluids : MonoBehaviour {
     const float velocityDissipation = 0.99f;
     const float densityDissipation = 0.9999f;
 
-    Vector2 impulsePosition = new Vector2(0.5f, 0.5f);
-    float inpulseSize = 0.1f;    
+    Vector2 impulsePosition = new Vector2(0.0f, 0.0f);
+    float inpulseSize = 0.1f;
+
+    Vector2 obstaclePosition = new Vector2(0.5f, 0.5f);
+    float obstacleSize = 0.1f;
+
+    GUITexture GUI;
     
     float viewWidth, viewHeight;
 
