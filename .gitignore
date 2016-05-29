@@ -104,3 +104,5 @@ obj/
 .Trashes
 ehthumbs.db
 Thumbs.db
+Particles/Library/
+Particles/Temp/
