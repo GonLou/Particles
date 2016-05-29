@@ -32,8 +32,14 @@ public class Fluids : MonoBehaviour {
     float viewWidth, viewHeight;
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start () 
+    {
+        gameObject.AddComponent<GUITexture>();
+        GUI = GetComponent<GUITexture>();
+        if(GUI)
+        {
+            Debug.Log("Has got a gui texture");
+        }
 	}
 	
 	// Update is called once per frame
