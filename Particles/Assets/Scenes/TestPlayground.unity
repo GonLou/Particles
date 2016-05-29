@@ -173,9 +173,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9af9a4f9cc67654f9a6aa5c44196376, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxParticlesNumber: 10
-  isAutoFeed: 1
+  isAutoFeed: 0
   prefabObject: {fileID: 181868, guid: 8c674144afa67ab419c3b1b75e3ab229, type: 2}
+  myLife: 0
 --- !u!4 &1092590848
 Transform:
   m_ObjectHideFlags: 0
