@@ -359,7 +359,7 @@
 			#pragma fragment frag
 
 			uniform float2 InverseSize;
-			uniform float Point;
+			uniform float2 Point;
 			uniform float Radius;
 
 			struct v2f

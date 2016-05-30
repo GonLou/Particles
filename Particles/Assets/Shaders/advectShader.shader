@@ -1,14 +1,15 @@
 ﻿Shader "Custom/advectShader" {
-	SubShader {
+	SubShader 
+	{
 		Pass
 		{
 			ZTest Always
 
 			CGPROGRAM
-#include "UnityCG.cginc"
-#pragma target 3.0
-#pragma vertex vert
-#pragma fragment frag
+			#include "UnityCG.cginc"
+			#pragma target 3.0
+			#pragma vertex vert
+			#pragma fragment frag
 
 			uniform sampler2D VelocityTexture;
 			uniform sampler2D SourceTexture;
@@ -34,20 +35,19 @@
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float2 fragCoord = IN.uv;
-				float solid = tex2D(Obstacles, InverseSize * IN.uv).x;
-				if (solid > 0.0)
-				{
-					float4 result = float4(0, 0, 0, 0);
-						return result;
-				}
+				float2 u = tex2D(VelocityTexture, IN.uv).xy;
 
-				float2 u = tex2D(VelocityTexture, InverseSize * IN.uv).xy;
-					float2 coord = InverseSize * (IN.uv - TimeStep * u);
-					float4 result = Dissipation * tex2D(SourceTexture, coord);
-					return result;
+				float2 coord = IN.uv - (u * InverseSize * TimeStep);
+
+				float4 result = Dissipation * tex2D(SourceTexture, coord);
+
+				float solid = tex2D(Obstacles, IN.uv).x;
+
+				if (solid > 0.0) result = float4(0, 0, 0, 0);
+
+				return result;
 			}
-				ENDCG
+			ENDCG
 		}
 	}
 }

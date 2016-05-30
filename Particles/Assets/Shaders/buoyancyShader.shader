@@ -1,14 +1,15 @@
 ﻿Shader "Custom/buoyancyShader" {
-	SubShader{
+	SubShader
+	{
 		Pass
 		{
 			ZTest Always
 			Name "Buoyancy"
 			CGPROGRAM
-#include "UnityCG.cginc"
-#pragma target 3.0
-#pragma vertex vert
-#pragma fragment frag
+			#include "UnityCG.cginc"
+			#pragma target 3.0
+			#pragma vertex vert
+			#pragma fragment frag
 
 			uniform sampler2D Velocity;
 			uniform sampler2D Temperature;
@@ -34,20 +35,20 @@
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float2 fragCoord = IN.uv;
-				float T = tex2D(Temperature, fragCoord).x;
-				float2 V = tex2D(Velocity, fragCoord).xy;
+				float T = tex2D(Temperature, IN.uv).x;
+				float2 V = tex2D(Velocity, IN.uv).xy;
+					float D = tex2D(Density, IN.uv).x;
 
-					float2 result = V;
+				float2 result = V;
+
 					if (T > AmbientTemperature)
 					{
-						float D = tex2D(Density, fragCoord).x;
 						result += (TimeStep * (T - AmbientTemperature) * Sigma - D * Kappa) * float2(0, 1);
 					}
 
 				return float4(result, 0, 1);
 			}
-				ENDCG
+			ENDCG
 		}
 	}
 }
