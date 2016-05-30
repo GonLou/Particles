@@ -58,7 +58,7 @@ public class Fluids : MonoBehaviour {
         createMultiRenderTextures(pressureTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
 
         GUI.texture = GUITexture;
-        GUIMat.SetTexture("Obstacles", obstaclesTexture);
+        //GUIMat.SetTexture("Obstacles", obstaclesTexture);
 	}
 
     void createRenderTextures(RenderTexture texture, RenderTextureFormat format, FilterMode filter, TextureWrapMode wrap, bool isReadWrite)
@@ -95,6 +95,11 @@ public class Fluids : MonoBehaviour {
         Graphics.SetRenderTarget(texture);
         GL.Clear(false, true,new Color(0,0,0,0));
         Graphics.SetRenderTarget(null);
+    }
+
+    void ApplyAdvect(RenderTexture velocity, RenderTexture source, RenderTexture destination, float dissipation)
+    {
+        
     }
 	// Update is called once per frame
 	void Update () {
