@@ -22,25 +22,28 @@ public class Particle
 
     public bool Update()
     {
-        provideAcceleration();
-        velocity += acceleration - Particles.Outside.getInstance().Gravity
-                            + Particles.Outside.getInstance().Wind;
+        acceleration.y += 0.01f;
+        acceleration = new Vector3(acceleration.x, acceleration.y, acceleration.z);
+
+        velocity += (acceleration - Particles.Outside.getInstance().Gravity
+                                  + Particles.Outside.getInstance().Wind);
+
         location += velocity;
-        lifeSpan--;
+        lifeSpan = lifeSpan - 0.1f;
         if (isDead())
             return false;
         return true;
     }
 
-    void provideAcceleration()
-    {
-        acceleration.y = acceleration.y + 0.000001f;
-        acceleration = new Vector3(acceleration.x, acceleration.y, acceleration.z);
-    }
-
     public Vector3 Location 
     {
         get {return location;}
+    }
+
+    public Vector3 Acceleration
+    {
+        get { return acceleration; }
+        set { acceleration = value; }
     }
 
     public bool isDead()

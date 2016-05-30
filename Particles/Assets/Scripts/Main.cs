@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Main : MonoBehaviour {
 
-    int maxParticlesNumber = 500;
+    int maxParticlesNumber = 100;
 
     public bool isAutoFeed = true;
 
@@ -13,8 +13,6 @@ public class Main : MonoBehaviour {
     List<GameObject> particleObjects;
 
     Vector3 initialPosition;
-
-    public float myLife;
 
     ArrayList particles = new ArrayList();
     //ArrayList objects = new ArrayList();
@@ -27,10 +25,12 @@ public class Main : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
         Particle particle;
 
         int count = particles.Count;
+
+        Debug.Log("count: " + count);
 
         for (int i=0; i < count; i++)
         {
@@ -38,24 +38,30 @@ public class Main : MonoBehaviour {
 
             particleObjects[i].transform.position = particle.Location;
 
-            if ((!particle.Update()) || (particle.isDead()))
+            if ( !particle.Update() )
             {
                 particles.RemoveAt(i);
+
+                Destroy(particleObjects[i]);
                 particleObjects.RemoveAt(i);
-                i--;
-                if (i < 0) break;
-                count = particles.Count;
+
+                if (isAutoFeed)
+                {
+                    particles.Add(GenerateParticle());
+                }
+                else
+                {
+                    i--;
+                    if (i < 0) break;
+                    count = particles.Count;
+                }
 
                 //Debug.Log("count: " + count);
                 //Debug.Log("i: " + i);
             }
-            
-            if (count < maxParticlesNumber && isAutoFeed)
-            {
-                particles.Add(GenerateParticle());
-            }
         }
-	}
+
+    }
 
     public void Smoke()
     {
@@ -67,18 +73,25 @@ public class Main : MonoBehaviour {
 
     public Particle GenerateParticle()
     {
-        myLife = Random.Range(50, 200);
+        Vector3 location;
+        float myLife = Random.Range(1, 5);
+        location = new Vector3(Random.Range(-0.01f, 0.1f),
+                                Random.Range(-0.01f, 1.0f),
+                                Random.Range(-0.01f, 0.1f));
+        Vector3 direction = new Vector3(0, 0.1f, 0);
+        //myLife = 1;
+        //Debug.Log("myLife " + myLife);
+        Color color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
         Particle particle = new Particle(   initialPosition,
-                                            new Vector3(Random.Range(0.0f, 1.0f),
-                                                        Random.Range(0.0f, 10.0f),
-                                                        Random.Range(0.0f, 4.0f)),
-                                            new Vector3(0,1,0),
-                                            myLife, 
-                                            Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f)   );
+                                            location,
+                                            direction,
+                                            myLife,
+                                            color);
         GameObject newParticle = (GameObject) Instantiate(prefabObject, particle.Location, Quaternion.identity);
         //newParticle.AddComponent<Rigidbody>(); we use our own gravity system
-        newParticle.AddComponent<SelfDestroy>();
-        newParticle.GetComponent<SelfDestroy>().enabled = true;
+        //newParticle.AddComponent<SelfDestroy>();
+        //newParticle.GetComponent<SelfDestroy>().enabled = true;
+        newParticle.GetComponent<Renderer>().material.color = color;
         particleObjects.Add(newParticle);
 
         return particle;

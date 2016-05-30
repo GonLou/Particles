@@ -7,15 +7,14 @@ public class SelfDestroy : MonoBehaviour
     float lifetime = 3;
     private float startTime;
 
-    void Awake()
+    void Start()
     {
         lifespan = GameObject.Find("Emitter").GetComponent<Main>();
-        lifetime = lifespan.myLife;
+        //lifetime = lifespan.myLife;
         startTime = Time.timeSinceLevelLoad;
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if ((startTime + lifetime) < Time.timeSinceLevelLoad)
             Destroy(gameObject);
