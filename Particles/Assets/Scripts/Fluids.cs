@@ -31,7 +31,10 @@ public class Fluids : MonoBehaviour {
     GUITexture GUI_tex;
     
     int viewWidth, viewHeight;
+    Vector2 offSet;
     Vector2 inverseSize;
+
+    bool obstacle = false, top = false, bottom = false, left = false, right = false;
 
 	// Use this for initialization
 	void Start () 
@@ -40,6 +43,7 @@ public class Fluids : MonoBehaviour {
 
         viewWidth = (int)GUI_tex.pixelInset.width;
         viewHeight = (int)GUI_tex.pixelInset.height;
+        offSet = new Vector2(GUI_tex.pixelInset.x, GUI_tex.pixelInset.y);
         inverseSize = new Vector2(1.0f / viewWidth, 1.0f / viewHeight);
 
         GUITexture = new RenderTexture(viewWidth, viewHeight, 0, RenderTextureFormat.ARGB32);
@@ -195,6 +199,50 @@ public class Fluids : MonoBehaviour {
 
         swapTextures(temperatureTexture);
         swapTextures(densityTexture);
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Vector2 pos = Input.mousePosition;
+
+            pos.x -= Screen.width * 0.5f;
+            pos.y -= Screen.height * 0.5f;
+
+            pos -= offSet;
+
+            pos.x /= viewWidth - 1.0f;
+            pos.y /= viewHeight - 1.0f;
+            obstaclePosition = new Vector2(pos.x, pos.y);
+
+        }
+
+        //Enable or disable walls and obstacles
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            obstacle = !obstacle;
+            obstaclesMat.SetFloat("_Active", obstacle.GetHashCode());
+        }
+
+        //Enable or disable borders
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            top = !top;
+            obstaclesMat.SetFloat("_Top", top.GetHashCode());
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            left = !left;
+            obstaclesMat.SetFloat("_Left", left.GetHashCode());
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            bottom = !bottom;
+            obstaclesMat.SetFloat("_Bottom", bottom.GetHashCode());
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            right = !right;
+            obstaclesMat.SetFloat("_Right", right.GetHashCode());
+        }
 
         ApplyDivergence(velocityTexture[READ], divergenceTexture);
 
