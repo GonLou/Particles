@@ -83,6 +83,19 @@ public class Fluids : MonoBehaviour {
         }
     }
 	
+    void swapTextures(RenderTexture[] texture)
+    {
+        RenderTexture temp = texture[0];
+        texture[0] = texture[1];
+        texture[1] = temp;
+    }
+
+    void clearTexture(RenderTexture texture)
+    {
+        Graphics.SetRenderTarget(texture);
+        GL.Clear(false, true,new Color(0,0,0,0));
+        Graphics.SetRenderTarget(null);
+    }
 	// Update is called once per frame
 	void Update () {
 	
