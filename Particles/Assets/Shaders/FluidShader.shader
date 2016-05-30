@@ -47,7 +47,7 @@
 
 			struct v2f
 			{
-				float4 pos :SV_POSITION;
+				float4 pos : SV_POSITION;
 				float2 uv : TEXCOORD0;
 			};
 
@@ -61,17 +61,16 @@
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float2 fragCoord = IN.uv;
-				float solid = tex2D(_Obstacles, _InverseSize * IN.uv).x;
-				if (solid > 0.0)
-				{
-					float4 result = float4(0, 0, 0, 0);
-					return result;
-				}
+				float2 u = tex2D(_Velocity, IN.uv).xy;
 
-				float2 u = tex2D(_Velocity, _InverseSize * IN.uv).xy;
-				float2 coord = _InverseSize * (IN.uv - _TimeStep * u);
+				float2 coord = IN.uv - (u * _InverseSize * _TimeStep);
+
 				float4 result = _Dissipation * tex2D(_Source, coord);
+
+				float solid = tex2D(_Obstacles, IN.uv).x;
+
+				if (solid > 0.0) result = float4(0, 0, 0, 0);
+
 				return result;
 			}
 			ENDCG
@@ -110,28 +109,27 @@
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float2 fragCoord = IN.uv;
-				float pressureUp = tex2D(_Pressure, fragCoord + float2(0, _InverseSize.y)).x;
-				float pressureDown = tex2D(_Pressure, fragCoord + float2(0, -_InverseSize.y)).x;
-				float pressureRight = tex2D(_Pressure, fragCoord + float2(_InverseSize.x, 0)).x;
-				float pressureLeft = tex2D(_Pressure, fragCoord + float2(-_InverseSize.x, 0)).x;
-				float pressureCenter = tex2D(_Pressure, fragCoord).x;
+				float pressureUp = tex2D(_Pressure, IN.uv + float2(0, _InverseSize.y)).x;
+				float pressureDown = tex2D(_Pressure, IN.uv + float2(0, -_InverseSize.y)).x;
+				float pressureRight = tex2D(_Pressure, IN.uv + float2(_InverseSize.x, 0)).x;
+				float pressureLeft = tex2D(_Pressure, IN.uv + float2(-_InverseSize.x, 0)).x;
+				float pressureCenter = tex2D(_Pressure, IN.uv).x;
 
-				float obstacleUp = tex2D(_Obstacles, fragCoord + float2(0, _InverseSize.y)).x;
-				float obstacleDown = tex2D(_Obstacles, fragCoord + float2(0, -_InverseSize.y)).x;
-				float obstacleRight = tex2D(_Obstacles, fragCoord + float2(_InverseSize.x, 0)).x;
-				float obstacleLeft = tex2D(_Obstacles, fragCoord + float2(-_InverseSize.x, 0)).x;
+				float obstacleUp = tex2D(_Obstacles, IN.uv + float2(0, _InverseSize.y)).x;
+				float obstacleDown = tex2D(_Obstacles, IN.uv + float2(0, -_InverseSize.y)).x;
+				float obstacleRight = tex2D(_Obstacles, IN.uv + float2(_InverseSize.x, 0)).x;
+				float obstacleLeft = tex2D(_Obstacles, IN.uv + float2(-_InverseSize.x, 0)).x;
 
-				if (obstacleUp > 0)
+				if (obstacleUp > 0.0)
 					pressureUp = pressureCenter;
-				if (obstacleDown > 0)
+				if (obstacleDown > 0.0)
 					pressureDown = pressureCenter;
-				if (obstacleRight > 0)
+				if (obstacleRight > 0.0)
 					pressureRight = pressureCenter;
-				if (obstacleLeft > 0)
+				if (obstacleLeft > 0.0)
 					pressureLeft = pressureCenter;
 
-				float bC = tex2D(_Divergence, fragCoord).x;
+				float bC = tex2D(_Divergence, IN.uv).x;
 				return (pressureLeft.x + pressureRight.x + pressureDown.x + pressureUp.x + _Alpha * bC) * _InverseBeta;
 			}
 			ENDCG
@@ -168,28 +166,27 @@
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float2 fragCoord = IN.uv;
-				float pressureUp = tex2D(_Pressure, fragCoord + float2(0, _InverseSize.y)).x;
-				float pressureDown = tex2D(_Pressure, fragCoord + float2(0, -_InverseSize.y)).x;
-				float pressureRight = tex2D(_Pressure, fragCoord + float2(_InverseSize.x, 0)).x;
-				float pressureLeft = tex2D(_Pressure, fragCoord + float2(-_InverseSize.x, 0)).x;
-				float pressureCenter = tex2D(_Pressure, fragCoord).x;
+				float pressureUp = tex2D(_Pressure, IN.uv + float2(0, _InverseSize.y)).x;
+				float pressureDown = tex2D(_Pressure, IN.uv + float2(0, -_InverseSize.y)).x;
+				float pressureRight = tex2D(_Pressure, IN.uv + float2(_InverseSize.x, 0)).x;
+				float pressureLeft = tex2D(_Pressure, IN.uv + float2(-_InverseSize.x, 0)).x;
+				float pressureCenter = tex2D(_Pressure, IN.uv).x;
 
-				float obstacleUp = tex2D(_Obstacles, fragCoord + float2(0, _InverseSize.y)).x;
-				float obstacleDown = tex2D(_Obstacles, fragCoord + float2(0, -_InverseSize.y)).x;
-				float obstacleRight = tex2D(_Obstacles, fragCoord + float2(_InverseSize.x, 0)).x;
-				float obstacleLeft = tex2D(_Obstacles, fragCoord + float2(-_InverseSize.x, 0)).x;
+				float obstacleUp = tex2D(_Obstacles, IN.uv + float2(0, _InverseSize.y)).x;
+				float obstacleDown = tex2D(_Obstacles, IN.uv + float2(0, -_InverseSize.y)).x;
+				float obstacleRight = tex2D(_Obstacles, IN.uv + float2(_InverseSize.x, 0)).x;
+				float obstacleLeft = tex2D(_Obstacles, IN.uv + float2(-_InverseSize.x, 0)).x;
 
-				if (obstacleUp > 0)
+				if (obstacleUp > 0.0)
 					pressureUp = pressureCenter;
-				if (obstacleDown > 0)
+				if (obstacleDown > 0.0)
 					pressureDown = pressureCenter;
-				if (obstacleRight > 0)
+				if (obstacleRight > 0.0)
 					pressureRight = pressureCenter;
-				if (obstacleLeft > 0)
+				if (obstacleLeft > 0.0)
 					pressureLeft = pressureCenter;
 
-				float2 oldV = tex2D(_Velocity, fragCoord).xy;
+				float2 oldV = tex2D(_Velocity, IN.uv).xy;
 				float2 grad = float2(pressureRight - pressureLeft, pressureUp - pressureDown) * _GradientScale;
 				float2 newV = oldV - grad;
 
@@ -228,16 +225,15 @@
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float2 fragCoord = IN.uv;
-				float2 velocityUp = tex2D(_Velocity, fragCoord + float2(0, _InverseSize.y)).xy;
-				float2 velocityDown = tex2D(_Velocity, fragCoord + float2(0, -_InverseSize.y)).xy;
-				float2 velocityRight = tex2D(_Velocity, fragCoord + float2(_InverseSize.x, 0)).xy;
-				float2 velocityLeft = tex2D(_Velocity, fragCoord + float2(-_InverseSize.x, 0)).xy;
+				float2 velocityUp = tex2D(_Velocity, IN.uv + float2(0, _InverseSize.y)).xy;
+				float2 velocityDown = tex2D(_Velocity, IN.uv + float2(0, -_InverseSize.y)).xy;
+				float2 velocityRight = tex2D(_Velocity, IN.uv + float2(_InverseSize.x, 0)).xy;
+				float2 velocityLeft = tex2D(_Velocity, IN.uv + float2(-_InverseSize.x, 0)).xy;
 
-				float obstacleUp = tex2D(_Obstacles, fragCoord + float2(0, _InverseSize.y)).x;
-				float obstacleDown = tex2D(_Obstacles, fragCoord + float2(0, -_InverseSize.y)).x;
-				float obstacleRight = tex2D(_Obstacles, fragCoord + float2(_InverseSize.x, 0)).x;
-				float obstacleLeft = tex2D(_Obstacles, fragCoord + float2(-_InverseSize.x, 0)).x;
+				float obstacleUp = tex2D(_Obstacles, IN.uv + float2(0, _InverseSize.y)).x;
+				float obstacleDown = tex2D(_Obstacles, IN.uv + float2(0, -_InverseSize.y)).x;
+				float obstacleRight = tex2D(_Obstacles, IN.uv + float2(_InverseSize.x, 0)).x;
+				float obstacleLeft = tex2D(_Obstacles, IN.uv + float2(-_InverseSize.x, 0)).x;
 
 				if (obstacleUp > 0.0)
 					velocityUp = 0.0;
@@ -333,14 +329,13 @@
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float2 fragCoord = IN.uv;
-				float T = tex2D(_Temperature, fragCoord).x;
-				float2 V = tex2D(_Velocity, fragCoord).xy;
+				float T = tex2D(_Temperature, IN.uv).x;
+				float2 V = tex2D(_Velocity, IN.uv).xy;
+				float D = tex2D(_Density, IN.uv).x;
 
 				float2 result = V;
 				if (T > _AmbientTemperature)
 				{
-					float D = tex2D(_Density, fragCoord).x;
 					result += (_TimeStep * (T - _AmbientTemperature) * _Sigma - D * _Kappa) * float2(0, 1);
 				}
 
