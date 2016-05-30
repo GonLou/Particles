@@ -46,6 +46,18 @@ public class Particle
         set { acceleration = value; }
     }
 
+    public Vector3 Velocity
+    {
+        get { return velocity; }
+        set { velocity = value; }
+    }
+
+    public Vector3 velocityChange()
+    {
+        if (-velocity.y < 0) velocity.y = 0.0f;
+        return new Vector3(-velocity.x, -velocity.y, -velocity.z);
+    }
+
     public bool isDead()
     {
         if (lifeSpan < 0.0f)
