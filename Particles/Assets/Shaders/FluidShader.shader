@@ -2,28 +2,28 @@
 {
 	Properties 
 	{
-		InverseSize ("Inverse Size", Vector) = (0.0,0.0,0.0,0.0)
-		Point ("Point", Vector) = (0.0, 0.0, 0.0, 0.0)
+		_InverseSize ("InverseSize", Vector) = (0.0,0.0,0.0,0.0)
+		_Point ("Point", Vector) = (0.0, 0.0, 0.0, 0.0)
 
-		TimeStep ("Time Step", Float) = 0.0
-		Dissipation ("Dissipation", Float) = 0.0
-		AmbientTemperature ("AmbientTemperature", Float) = 0.0
-		Sigma ("Sigma", Float) = 0.0
-		Kappa ("Kappa", Float) = 0.0
-		Radius ("Radius", Float) = 0.0
-		Fill ("Fill", Float) = 0.0
-		HalfInverseCellSize ("Half Inverse Cell Size", Float) = 0.0
-		Alpha ("Alpha", Float) = 0.0
-		InverseBeta ("Inverse Beta", Float) = 0.0
-		GradientScale ("Gradient Scale", Float) = 0.0
+		_TimeStep ("Time Step", Float) = 0.0
+		_Dissipation ("Dissipation", Float) = 0.0
+		_AmbientTemperature ("AmbientTemperature", Float) = 0.0
+		_Sigma ("Sigma", Float) = 0.0
+		_Kappa ("Kappa", Float) = 0.0
+		_Radius ("Radius", Float) = 0.0
+		_Fill ("Fill", Float) = 0.0
+		_HalfInverseCellSize ("HalfInverseCellSize", Float) = 0.0
+		_Alpha ("Alpha", Float) = 0.0
+		_InverseBeta ("InverseBeta", Float) = 0.0
+		_GradientScale ("Gradient Scale", Float) = 0.0
 
-		Velocity ("Velocity", 2D) = "" {}
-		SourceTexture ("Source Texture", 2D) = "" {}
-		Obstacles ("Obstacles", 2D) = "" {}
-		Temperature ("Temperature", 2D) = "" {}
-		Density ("Density", 2D) = "" {}
-		Pressure ("Pressure", 2D) = "" {}
-		Divergence ("Divergence", 2D) = "" {}
+		_Velocity ("Velocity", 2D) = "" {}
+		_Source ("Source", 2D) = "" {}
+		_Obstacles ("Obstacles", 2D) = "" {}
+		_Temperature ("Temperature", 2D) = "" {}
+		_Density ("Density", 2D) = "" {}
+		_Pressure ("Pressure", 2D) = "" {}
+		_Divergence ("Divergence", 2D) = "" {}
 	}
 
 	SubShader 
@@ -37,17 +37,17 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			uniform sampler2D VelocityTexture;
-			uniform sampler2D SourceTexture;
-			uniform sampler2D Obstacles;
+			uniform sampler2D _Velocity;
+			uniform sampler2D _Source;
+			uniform sampler2D _Obstacles;
 
-			uniform float2 InverseSize;
-			uniform float TimeStep;
-			uniform float Dissipation;
+			uniform float2 _InverseSize;
+			uniform float _TimeStep;
+			uniform float _Dissipation;
 
 			struct v2f
 			{
-				float4 pos : POSITION;
+				float4 pos :SV_POSITION;
 				float2 uv : TEXCOORD0;
 			};
 
@@ -62,16 +62,16 @@
 			float4 frag(v2f IN) : COLOR
 			{
 				float2 fragCoord = IN.uv;
-				float solid = tex2D(Obstacles, InverseSize * IN.uv).x;
+				float solid = tex2D(_Obstacles, _InverseSize * IN.uv).x;
 				if (solid > 0.0)
 				{
 					float4 result = float4(0, 0, 0, 0);
 					return result;
 				}
 
-				float2 u = tex2D(VelocityTexture, InverseSize * IN.uv).xy;
-				float2 coord = InverseSize * (IN.uv - TimeStep * u);
-				float4 result = Dissipation * tex2D(SourceTexture, coord);
+				float2 u = tex2D(_Velocity, _InverseSize * IN.uv).xy;
+				float2 coord = _InverseSize * (IN.uv - _TimeStep * u);
+				float4 result = _Dissipation * tex2D(_Source, coord);
 				return result;
 			}
 			ENDCG
@@ -86,17 +86,17 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			uniform sampler2D Pressure;
-			uniform sampler2D Divergence;
-			uniform sampler2D Obstacles;
+			uniform sampler2D _Pressure;
+			uniform sampler2D _Divergence;
+			uniform sampler2D _Obstacles;
 
-			uniform float Alpha;
-			uniform float InverseBeta;
-			uniform float2 InverseSize;
+			uniform float _Alpha;
+			uniform float _InverseBeta;
+			uniform float2 _InverseSize;
 
 			struct v2f
 			{
-				float4 pos : POSITION;
+				float4 pos : SV_POSITION;
 				float2 uv : TEXCOORD0;
 			};
 
@@ -111,16 +111,16 @@
 			float4 frag(v2f IN) : COLOR
 			{
 				float2 fragCoord = IN.uv;
-				float pressureUp = tex2D(Pressure, fragCoord + float2(0, InverseSize.y)).x;
-				float pressureDown = tex2D(Pressure, fragCoord + float2(0, -InverseSize.y)).x;
-				float pressureRight = tex2D(Pressure, fragCoord + float2(InverseSize.x, 0)).x;
-				float pressureLeft = tex2D(Pressure, fragCoord + float2(-InverseSize.x, 0)).x;
-				float pressureCenter = tex2D(Pressure, fragCoord).x;
+				float pressureUp = tex2D(_Pressure, fragCoord + float2(0, _InverseSize.y)).x;
+				float pressureDown = tex2D(_Pressure, fragCoord + float2(0, -_InverseSize.y)).x;
+				float pressureRight = tex2D(_Pressure, fragCoord + float2(_InverseSize.x, 0)).x;
+				float pressureLeft = tex2D(_Pressure, fragCoord + float2(-_InverseSize.x, 0)).x;
+				float pressureCenter = tex2D(_Pressure, fragCoord).x;
 
-				float obstacleUp = tex2D(Obstacles, fragCoord + float2(0, InverseSize.y)).x;
-				float obstacleDown = tex2D(Obstacles, fragCoord + float2(0, -InverseSize.y)).x;
-				float obstacleRight = tex2D(Obstacles, fragCoord + float2(InverseSize.x, 0)).x;
-				float obstacleLeft = tex2D(Obstacles, fragCoord + float2(-InverseSize.x, 0)).x;
+				float obstacleUp = tex2D(_Obstacles, fragCoord + float2(0, _InverseSize.y)).x;
+				float obstacleDown = tex2D(_Obstacles, fragCoord + float2(0, -_InverseSize.y)).x;
+				float obstacleRight = tex2D(_Obstacles, fragCoord + float2(_InverseSize.x, 0)).x;
+				float obstacleLeft = tex2D(_Obstacles, fragCoord + float2(-_InverseSize.x, 0)).x;
 
 				if (obstacleUp > 0)
 					pressureUp = pressureCenter;
@@ -131,8 +131,8 @@
 				if (obstacleLeft > 0)
 					pressureLeft = pressureCenter;
 
-				float bC = tex2D(Divergence, fragCoord).x;
-				return (pressureLeft.x + pressureRight.x + pressureDown.x + pressureUp.x + Alpha * bC) * InverseBeta;
+				float bC = tex2D(_Divergence, fragCoord).x;
+				return (pressureLeft.x + pressureRight.x + pressureDown.x + pressureUp.x + _Alpha * bC) * _InverseBeta;
 			}
 			ENDCG
 		}
@@ -146,15 +146,15 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			uniform sampler2D Velocity;
-			uniform sampler2D Pressure;
-			uniform sampler2D Obstacles;
-			uniform float GradientScale;
-			uniform float2 InverseSize;
+			uniform sampler2D _Velocity;
+			uniform sampler2D _Pressure;
+			uniform sampler2D _Obstacles;
+			uniform float _GradientScale;
+			uniform float2 _InverseSize;
 
 			struct v2f
 			{
-				float4 pos : POSITION;
+				float4 pos : SV_POSITION;
 				float2 uv : TEXCOORD0;
 			};
 
@@ -169,16 +169,16 @@
 			float4 frag(v2f IN) : COLOR
 			{
 				float2 fragCoord = IN.uv;
-				float pressureUp = tex2D(Pressure, fragCoord + float2(0, InverseSize.y)).x;
-				float pressureDown = tex2D(Pressure, fragCoord + float2(0, -InverseSize.y)).x;
-				float pressureRight = tex2D(Pressure, fragCoord + float2(InverseSize.x, 0)).x;
-				float pressureLeft = tex2D(Pressure, fragCoord + float2(-InverseSize.x, 0)).x;
-				float pressureCenter = tex2D(Pressure, fragCoord).x;
+				float pressureUp = tex2D(_Pressure, fragCoord + float2(0, _InverseSize.y)).x;
+				float pressureDown = tex2D(_Pressure, fragCoord + float2(0, -_InverseSize.y)).x;
+				float pressureRight = tex2D(_Pressure, fragCoord + float2(_InverseSize.x, 0)).x;
+				float pressureLeft = tex2D(_Pressure, fragCoord + float2(-_InverseSize.x, 0)).x;
+				float pressureCenter = tex2D(_Pressure, fragCoord).x;
 
-				float obstacleUp = tex2D(Obstacles, fragCoord + float2(0, InverseSize.y)).x;
-				float obstacleDown = tex2D(Obstacles, fragCoord + float2(0, -InverseSize.y)).x;
-				float obstacleRight = tex2D(Obstacles, fragCoord + float2(InverseSize.x, 0)).x;
-				float obstacleLeft = tex2D(Obstacles, fragCoord + float2(-InverseSize.x, 0)).x;
+				float obstacleUp = tex2D(_Obstacles, fragCoord + float2(0, _InverseSize.y)).x;
+				float obstacleDown = tex2D(_Obstacles, fragCoord + float2(0, -_InverseSize.y)).x;
+				float obstacleRight = tex2D(_Obstacles, fragCoord + float2(_InverseSize.x, 0)).x;
+				float obstacleLeft = tex2D(_Obstacles, fragCoord + float2(-_InverseSize.x, 0)).x;
 
 				if (obstacleUp > 0)
 					pressureUp = pressureCenter;
@@ -189,8 +189,8 @@
 				if (obstacleLeft > 0)
 					pressureLeft = pressureCenter;
 
-				float2 oldV = tex2D(Velocity, fragCoord).xy;
-				float2 grad = float2(pressureRight - pressureLeft, pressureUp - pressureDown) * GradientScale;
+				float2 oldV = tex2D(_Velocity, fragCoord).xy;
+				float2 grad = float2(pressureRight - pressureLeft, pressureUp - pressureDown) * _GradientScale;
 				float2 newV = oldV - grad;
 
 				return float4(newV, 0, 1);
@@ -207,14 +207,14 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			uniform sampler2D Velocity;
-			uniform sampler2D Obstacles;
-			uniform float HalfInverseCellSize;
-			uniform float2 InverseSize;
+			uniform sampler2D _Velocity;
+			uniform sampler2D _Obstacles;
+			uniform float _HalfInverseCellSize;
+			uniform float2 _InverseSize;
 
 			struct v2f
 			{
-				float4 pos : POSITION;
+				float4 pos : SV_POSITION;
 				float2 uv : TEXCOORD0;
 			};
 
@@ -229,15 +229,15 @@
 			float4 frag(v2f IN) : COLOR
 			{
 				float2 fragCoord = IN.uv;
-				float2 velocityUp = tex2D(Velocity, fragCoord + float2(0, InverseSize.y)).xy;
-				float2 velocityDown = tex2D(Velocity, fragCoord + float2(0, -InverseSize.y)).xy;
-				float2 velocityRight = tex2D(Velocity, fragCoord + float2(InverseSize.x, 0)).xy;
-				float2 velocityLeft = tex2D(Velocity, fragCoord + float2(-InverseSize.x, 0)).xy;
+				float2 velocityUp = tex2D(_Velocity, fragCoord + float2(0, _InverseSize.y)).xy;
+				float2 velocityDown = tex2D(_Velocity, fragCoord + float2(0, -_InverseSize.y)).xy;
+				float2 velocityRight = tex2D(_Velocity, fragCoord + float2(_InverseSize.x, 0)).xy;
+				float2 velocityLeft = tex2D(_Velocity, fragCoord + float2(-_InverseSize.x, 0)).xy;
 
-				float obstacleUp = tex2D(Obstacles, fragCoord + float2(0, InverseSize.y)).x;
-				float obstacleDown = tex2D(Obstacles, fragCoord + float2(0, -InverseSize.y)).x;
-				float obstacleRight = tex2D(Obstacles, fragCoord + float2(InverseSize.x, 0)).x;
-				float obstacleLeft = tex2D(Obstacles, fragCoord + float2(-InverseSize.x, 0)).x;
+				float obstacleUp = tex2D(_Obstacles, fragCoord + float2(0, _InverseSize.y)).x;
+				float obstacleDown = tex2D(_Obstacles, fragCoord + float2(0, -_InverseSize.y)).x;
+				float obstacleRight = tex2D(_Obstacles, fragCoord + float2(_InverseSize.x, 0)).x;
+				float obstacleLeft = tex2D(_Obstacles, fragCoord + float2(-_InverseSize.x, 0)).x;
 
 				if (obstacleUp > 0.0)
 					velocityUp = 0.0;
@@ -248,7 +248,7 @@
 				if (obstacleLeft > 0.0)
 					velocityLeft = 0.0;
 
-				float result = HalfInverseCellSize *(velocityRight.x - velocityLeft.x + velocityUp.y - velocityDown.y);
+				float result = _HalfInverseCellSize *(velocityRight.x - velocityLeft.x + velocityUp.y - velocityDown.y);
 				return float4(result, 0, 0, 1);
 			}
 			ENDCG
@@ -263,14 +263,14 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			uniform float2 Point;
-			uniform float Radius;
-			uniform float Fill;
-			uniform sampler2D SourceTexture;
+			uniform float2 _Point;
+			uniform float _Radius;
+			uniform float _Fill;
+			uniform sampler2D _SourceTexture;
 
 			struct v2f
 			{
-				float4 pos : POSITION;
+				float4 pos : SV_POSITION;
 				float2 uv : TEXCOORD0;
 			};
 
@@ -284,18 +284,18 @@
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float d = distance(Point, IN.uv);
+				float d = distance(_Point, IN.uv);
 
 				float impulse = 0;
-				if (d < Radius)
+				if (d < _Radius)
 				{
-					float a = (Radius - d) * 0.5;
+					float a = (_Radius - d) * 0.5;
 					impulse = min(a, 10);
 				}
 
-				float source = tex2D(SourceTexture, IN.uv).x;
+				float source = tex2D(_SourceTexture, IN.uv).x;
 
-				return max(0, lerp(source, Fill, impulse)).xxxx;
+				return max(0, lerp(source, _Fill, impulse)).xxxx;
 			}
 			ENDCG
 		}
@@ -309,17 +309,17 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			uniform sampler2D Velocity;
-			uniform sampler2D Temperature;
-			uniform sampler2D Density;
-			uniform float AmbientTemperature;
-			uniform float TimeStep;
-			uniform float Sigma;
-			uniform float Kappa;
+			uniform sampler2D _Velocity;
+			uniform sampler2D _Temperature;
+			uniform sampler2D _Density;
+			uniform float _AmbientTemperature;
+			uniform float _TimeStep;
+			uniform float _Sigma;
+			uniform float _Kappa;
 
 			struct v2f
 			{
-				float4 pos : POSITION;
+				float4 pos : SV_POSITION;
 				float2 uv : TEXCOORD0;
 			};
 
@@ -334,14 +334,14 @@
 			float4 frag(v2f IN) : COLOR
 			{
 				float2 fragCoord = IN.uv;
-				float T = tex2D(Temperature, fragCoord).x;
-				float2 V = tex2D(Velocity, fragCoord).xy;
+				float T = tex2D(_Temperature, fragCoord).x;
+				float2 V = tex2D(_Velocity, fragCoord).xy;
 
 				float2 result = V;
-				if (T > AmbientTemperature)
+				if (T > _AmbientTemperature)
 				{
-					float D = tex2D(Density, fragCoord).x;
-					result += (TimeStep * (T - AmbientTemperature) * Sigma - D * Kappa) * float2(0, 1);
+					float D = tex2D(_Density, fragCoord).x;
+					result += (_TimeStep * (T - _AmbientTemperature) * _Sigma - D * _Kappa) * float2(0, 1);
 				}
 
 				return float4(result, 0, 1);
@@ -358,13 +358,13 @@
 			#pragma vertex vert
 			#pragma fragment frag
 
-			uniform float2 InverseSize;
-			uniform float2 Point;
-			uniform float Radius;
+			uniform float2 _InverseSize;
+			uniform float2 _Point;
+			uniform float _Radius;
 
 			struct v2f
 			{
-				float4 pos : POSITION;
+				float4 pos : SV_POSITION;
 				float2 uv : TEXCOORD0;
 			};
 
@@ -381,15 +381,15 @@
 				float4 result = float4(0, 0, 0, 0);
 
 				//draw border 
-				if (IN.uv.x <= InverseSize.x) result = float4(1, 1, 1, 1);
-				if (IN.uv.x >= 1.0 - InverseSize.x) result = float4(1, 1, 1, 1);
-				if (IN.uv.y <= InverseSize.y) result = float4(1, 1, 1, 1);
-				if (IN.uv.y >= 1.0 - InverseSize.y) result = float4(1, 1, 1, 1);
+				if (IN.uv.x <= _InverseSize.x) result = float4(1, 1, 1, 1);
+				if (IN.uv.x >= 1.0 - _InverseSize.x) result = float4(1, 1, 1, 1);
+				if (IN.uv.y <= _InverseSize.y) result = float4(1, 1, 1, 1);
+				if (IN.uv.y >= 1.0 - _InverseSize.y) result = float4(1, 1, 1, 1);
 
 				//draw point
-				float d = distance(Point, IN.uv);
+				float d = distance(_Point, IN.uv);
 
-				if (d < Radius) result = float4(1, 1, 1, 1);
+				if (d < _Radius) result = float4(1, 1, 1, 1);
 
 				return result;
 			}

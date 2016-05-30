@@ -1,53 +1,56 @@
 ﻿Shader "Custom/advectShader" {
-	SubShader 
+	SubShader
 	{
 		Pass
 		{
 			ZTest Always
 
 			CGPROGRAM
-			#include "UnityCG.cginc"
-			#pragma target 3.0
-			#pragma vertex vert
-			#pragma fragment frag
+#include "UnityCG.cginc"
+#pragma target 3.0
+#pragma vertex vert
+#pragma fragment frag
 
-			uniform sampler2D VelocityTexture;
-			uniform sampler2D SourceTexture;
-			uniform sampler2D Obstacles;
+			uniform sampler2D _Velocity;
+			uniform sampler2D _Source;
+			uniform sampler2D _Obstacles;
 
-			uniform float2 InverseSize;
-			uniform float TimeStep;
-			uniform float Dissipation;
+			uniform float2 _InverseSize;
+			uniform float _TimeStep;
+			uniform float _Dissipation;
 
 			struct v2f
 			{
-				float4 pos : SV_POSITION;
-				float2 uv : TEXCOORD0;
+				float4  pos : SV_POSITION;
+				float2  uv : TEXCOORD0;
 			};
 
 			v2f vert(appdata_base v)
 			{
-				v2f o;
-				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
-				o.uv = v.texcoord.xy;
-				return o;
+				v2f OUT;
+				OUT.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				OUT.uv = v.texcoord.xy;
+				return OUT;
 			}
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float2 u = tex2D(VelocityTexture, IN.uv).xy;
 
-				float2 coord = IN.uv - (u * InverseSize * TimeStep);
+				float2 u = tex2D(_Velocity, IN.uv).xy;
 
-				float4 result = Dissipation * tex2D(SourceTexture, coord);
+				float2 coord = IN.uv - (u * _InverseSize * _TimeStep);
 
-				float solid = tex2D(Obstacles, IN.uv).x;
+				float4 result = _Dissipation * tex2D(_Source, coord);
+
+				float solid = tex2D(_Obstacles, IN.uv).x;
 
 				if (solid > 0.0) result = float4(0, 0, 0, 0);
 
 				return result;
 			}
-			ENDCG
+
+				ENDCG
+
 		}
 	}
 }

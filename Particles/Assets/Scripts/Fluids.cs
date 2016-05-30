@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Fluids : MonoBehaviour {
     public Material GUIMat, advectMat, buoyancyMat, divergenceMat, jacobiMat, impulseMat, gradientMat, obstaclesMat;
+    //public Material GUIMat, fluidMat;
 
     RenderTexture GUITexture, divergenceTexture, obstaclesTexture;
     RenderTexture[] velocityTexture, densityTexture, pressureTexture, temperatureTexture;
@@ -57,15 +58,15 @@ public class Fluids : MonoBehaviour {
         obstaclesTexture.Create();
 
         velocityTexture = new RenderTexture[2];
-        createMultiRenderTextures(velocityTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
+        createMultiRenderTextures(velocityTexture, RenderTextureFormat.RGFloat, FilterMode.Bilinear, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
         densityTexture = new RenderTexture[2];
-        createMultiRenderTextures(densityTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
+        createMultiRenderTextures(densityTexture, RenderTextureFormat.RFloat, FilterMode.Bilinear, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
         temperatureTexture = new RenderTexture[2];
-        createMultiRenderTextures(temperatureTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
-        pressureTexture = new RenderTexture[2];
-        
+        createMultiRenderTextures(temperatureTexture, RenderTextureFormat.RFloat, FilterMode.Bilinear, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
+        pressureTexture = new RenderTexture[2]; 
         createMultiRenderTextures(pressureTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
-        GUIMat.SetTexture("Obstacles", obstaclesTexture);
+        GetComponent<GUITexture>().texture = GUITexture;
+        GUIMat.SetTexture("_Obstacles", obstaclesTexture);
 	}
 
     void createMultiRenderTextures(RenderTexture[] texture, RenderTextureFormat format, FilterMode filter, TextureWrapMode wrap, RenderTextureReadWrite readWrite)
@@ -95,35 +96,35 @@ public class Fluids : MonoBehaviour {
 
     void ApplyAdvect(RenderTexture velocity, RenderTexture source, RenderTexture destination, float dissipation)
     {
-        advectMat.SetVector("InverseSize", inverseSize);
-        advectMat.SetFloat("TimeStep", timeStep);
-        advectMat.SetFloat("Dissipation", dissipation);
-        advectMat.SetTexture("Velocity", velocity);
-        advectMat.SetTexture("SourceTexture", source);
-        advectMat.SetTexture("Obstacles", obstaclesTexture);
+        advectMat.SetVector("_InverseSize", inverseSize);
+        advectMat.SetFloat("_TimeStep", timeStep);
+        advectMat.SetFloat("_Dissipation", dissipation);
+        advectMat.SetTexture("_Velocity", velocity);
+        advectMat.SetTexture("_Source", source);
+        advectMat.SetTexture("_Obstacles", obstaclesTexture);
 
         Graphics.Blit(null, destination, advectMat);
     }
 
     void ApplyBuoyancy(RenderTexture velocity, RenderTexture temperature, RenderTexture density, RenderTexture destination)
     {
-        buoyancyMat.SetTexture("Velocity", velocity);
-        buoyancyMat.SetTexture("Temperature", temperature);
-        buoyancyMat.SetTexture("Density", density);
-        buoyancyMat.SetFloat("AmbientTemperature", ambientTemperature);
-        buoyancyMat.SetFloat("TimeStep", timeStep);
-        buoyancyMat.SetFloat("Sigma", smokeBuoyancy);
-        buoyancyMat.SetFloat("Kappa", smokeWeight);
+        buoyancyMat.SetTexture("_Velocity", velocity);
+        buoyancyMat.SetTexture("_Temperature", temperature);
+        buoyancyMat.SetTexture("_Density", density);
+        buoyancyMat.SetFloat("_AmbientTemperature", ambientTemperature);
+        buoyancyMat.SetFloat("_TimeStep", timeStep);
+        buoyancyMat.SetFloat("_Sigma", smokeBuoyancy);
+        buoyancyMat.SetFloat("_Kappa", smokeWeight);
 
         Graphics.Blit(null, destination, buoyancyMat);
     }
 
     void ApplyImpulse(RenderTexture source, RenderTexture destination, Vector2 position, float radius, float val)
     {
-        impulseMat.SetVector("Point", position);
-        impulseMat.SetFloat("Radius", radius);
-        impulseMat.SetFloat("Fill", val);
-        impulseMat.SetTexture("SourceTexture", source);
+        impulseMat.SetVector("_Point", position);
+        impulseMat.SetFloat("_Radius", radius);
+        impulseMat.SetFloat("_Fill", val);
+        impulseMat.SetTexture("_Source", source);
 
 
         Graphics.Blit(null, destination, impulseMat);
@@ -131,42 +132,42 @@ public class Fluids : MonoBehaviour {
 
     void ApplyDivergence(RenderTexture velocity, RenderTexture destination)
     {
-        divergenceMat.SetFloat("HalfInverseCellSize", 0.5f / cellSize);
-        divergenceMat.SetTexture("Velocity", velocity);
-        divergenceMat.SetVector("InverseSize", inverseSize);
-        divergenceMat.SetTexture("Obstacles", obstaclesTexture);
+        divergenceMat.SetFloat("_HalfInverseCellSize", 0.5f / cellSize);
+        divergenceMat.SetTexture("_Velocity", velocity);
+        divergenceMat.SetVector("_InverseSize", inverseSize);
+        divergenceMat.SetTexture("_Obstacles", obstaclesTexture);
 
         Graphics.Blit(null, destination, divergenceMat);
     }
 
     void ApplyJacobi(RenderTexture pressure, RenderTexture divergence, RenderTexture destination)
     {
-        jacobiMat.SetTexture("Pressure", pressure);
-        jacobiMat.SetTexture("Divergence", divergence);
-        jacobiMat.SetVector("InverseSize", inverseSize);
-        jacobiMat.SetFloat("Alpha", -cellSize * cellSize);
-        jacobiMat.SetFloat("InverseBeta", 0.25f);
-        jacobiMat.SetTexture("Obstacles", obstaclesTexture);
+        jacobiMat.SetTexture("_Pressure", pressure);
+        jacobiMat.SetTexture("_Divergence", divergence);
+        jacobiMat.SetVector("_InverseSize", inverseSize);
+        jacobiMat.SetFloat("_Alpha", -cellSize * cellSize);
+        jacobiMat.SetFloat("_InverseBeta", 0.25f);
+        jacobiMat.SetTexture("_Obstacles", obstaclesTexture);
 
         Graphics.Blit(null, destination, jacobiMat);
     }
 
     void ApplySutraction(RenderTexture velocity, RenderTexture pressure, RenderTexture destination)
     {
-        gradientMat.SetTexture("Velocity", velocity);
-        gradientMat.SetTexture("Pressure", pressure);
-        gradientMat.SetFloat("GradientScale", gradientScale);
-        gradientMat.SetVector("InverseSize", inverseSize);
-        gradientMat.SetTexture("Obstacles", obstaclesTexture);
+        gradientMat.SetTexture("_Velocity", velocity);
+        gradientMat.SetTexture("_Pressure", pressure);
+        gradientMat.SetFloat("_GradientScale", gradientScale);
+        gradientMat.SetVector("_InverseSize", inverseSize);
+        gradientMat.SetTexture("_Obstacles", obstaclesTexture);
 
         Graphics.Blit(null, destination, gradientMat);
     }
 
     void CreateObstacles()
     {       
-        obstaclesMat.SetVector("InverseSize", inverseSize);
-        obstaclesMat.SetVector("Point", obstaclePosition);
-        obstaclesMat.SetFloat("Radius", obstacleSize);
+        obstaclesMat.SetVector("_InverseSize", inverseSize);
+        obstaclesMat.SetVector("_Point", obstaclePosition);
+        obstaclesMat.SetFloat("_Radius", obstacleSize);
 
         Graphics.Blit(null, obstaclesTexture, obstaclesMat);
     }

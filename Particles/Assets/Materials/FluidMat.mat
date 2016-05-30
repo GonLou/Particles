@@ -17,13 +17,6 @@ Material:
     m_TexEnvs:
       data:
         first:
-          name: Obstacles
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
           name: SourceTexture
         second:
           m_Texture: {fileID: 0}
@@ -31,14 +24,7 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: Pressure
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: Divergence
+          name: Obstacles
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -66,7 +52,14 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Obstacles
+          name: Pressure
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: Divergence
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -80,7 +73,14 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _SourceTexture
+          name: _Source
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Obstacles
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -113,6 +113,13 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SourceTexture
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -128,28 +135,8 @@ Material:
         second: 0.9999
       data:
         first:
-          name: Alpha
-        second: -1.5625
-      data:
-        first:
-          name: InverseBeta
-        second: 0.25
-      data:
-        first:
-          name: GradientScale
-        second: 0.9
-      data:
-        first:
-          name: HalfInverseCellSize
-        second: 0.4
-      data:
-        first:
           name: Radius
         second: 0.1
-      data:
-        first:
-          name: Fill
-        second: 1
       data:
         first:
           name: AmbientTemperature
@@ -162,6 +149,26 @@ Material:
         first:
           name: Kappa
         second: 0.05
+      data:
+        first:
+          name: Fill
+        second: 1
+      data:
+        first:
+          name: HalfInverseCellSize
+        second: 0.4
+      data:
+        first:
+          name: Alpha
+        second: -1.5625
+      data:
+        first:
+          name: InverseBeta
+        second: 0.25
+      data:
+        first:
+          name: GradientScale
+        second: 0.9
       data:
         first:
           name: _TimeStep
@@ -189,11 +196,11 @@ Material:
       data:
         first:
           name: _HalfInverseCellSize
-        second: 0.4
+        second: 0.5
       data:
         first:
           name: _Alpha
-        second: -1.5625
+        second: -1
       data:
         first:
           name: _InverseBeta
@@ -201,7 +208,7 @@ Material:
       data:
         first:
           name: _GradientScale
-        second: 0.9
+        second: 1.125
     m_Colors:
       data:
         first:
