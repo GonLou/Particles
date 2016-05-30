@@ -22,7 +22,9 @@ public class Particle
 
     public bool Update()
     {
-        acceleration.y += 0.01f;
+        acceleration.y += 0.1f;
+        if (acceleration.y > 2) acceleration.y = 1;
+
         acceleration = new Vector3(acceleration.x, acceleration.y, acceleration.z);
 
         velocity += (acceleration - Particles.Outside.getInstance().Gravity
