@@ -6,22 +6,15 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: New Material
+  m_Name: FluidMat
   m_Shader: {fileID: 4800000, guid: 7351e2799ddd15f49b387af3d4c3d38a, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
-      data:
-        first:
-          name: _MainTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
       data:
         first:
           name: Obstacles
@@ -71,7 +64,60 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Obstacles
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Velocity
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SourceTexture
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Temperature
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Density
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Pressure
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Divergence
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
+      data:
+        first:
+          name: _Radius
+        second: 0.1
       data:
         first:
           name: TimeStep
@@ -116,6 +162,46 @@ Material:
         first:
           name: Kappa
         second: 0.05
+      data:
+        first:
+          name: _TimeStep
+        second: 0.125
+      data:
+        first:
+          name: _Dissipation
+        second: 0.9999
+      data:
+        first:
+          name: _AmbientTemperature
+        second: 0
+      data:
+        first:
+          name: _Sigma
+        second: 1
+      data:
+        first:
+          name: _Kappa
+        second: 0.05
+      data:
+        first:
+          name: _Fill
+        second: 1
+      data:
+        first:
+          name: _HalfInverseCellSize
+        second: 0.4
+      data:
+        first:
+          name: _Alpha
+        second: -1.5625
+      data:
+        first:
+          name: _InverseBeta
+        second: 0.25
+      data:
+        first:
+          name: _GradientScale
+        second: 0.9
     m_Colors:
       data:
         first:
@@ -124,4 +210,12 @@ Material:
       data:
         first:
           name: Point
+        second: {r: 0.5, g: 0, b: 0, a: 0}
+      data:
+        first:
+          name: _InverseSize
+        second: {r: 0.001953125, g: 0.001953125, b: 0, a: 0}
+      data:
+        first:
+          name: _Point
         second: {r: 0.5, g: 0, b: 0, a: 0}
