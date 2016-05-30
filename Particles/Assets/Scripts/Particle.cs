@@ -40,6 +40,7 @@ public class Particle
     public Vector3 Location 
     {
         get {return location;}
+        set { location = value; }
     }
 
     public Vector3 Acceleration

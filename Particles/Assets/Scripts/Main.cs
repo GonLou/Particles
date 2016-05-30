@@ -128,7 +128,8 @@ public class Main : MonoBehaviour {
     void calculateRebound(Transform pf)
     {
         float x = pf.position.x * Mathf.Cos(45*Mathf.PI / 180);
-        float y = pf.position.y * Mathf.Sin(45* Mathf.PI / 180);     
+        float y = pf.position.y * Mathf.Sin(45* Mathf.PI / 180);
+        pf.position = new Vector3(x, y, pf.position.z);
     }
 
 
