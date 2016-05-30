@@ -44,20 +44,9 @@ public class Fluids : MonoBehaviour {
         viewHeight = GUI.pixelInset.height;
         inverseSize = new Vector2(1.0f / viewWidth, 1.0f / viewHeight);
 
-        GUITexture = new RenderTexture((int)viewWidth, (int)viewHeight, 0, RenderTextureFormat.ARGB32);
-        GUITexture.filterMode = FilterMode.Bilinear;
-        GUITexture.wrapMode = TextureWrapMode.Clamp;
-        GUITexture.Create();
-
-        divergenceTexture = new RenderTexture((int)viewWidth, (int)viewHeight, 0, RenderTextureFormat.RFloat, RenderTextureReadWrite.Linear);
-        divergenceTexture.filterMode = FilterMode.Point;
-        divergenceTexture.wrapMode = TextureWrapMode.Clamp;
-        divergenceTexture.Create();
-
-        obstaclesTexture = new RenderTexture((int)viewWidth, (int)viewHeight, 0, RenderTextureFormat.RFloat, RenderTextureReadWrite.Linear);
-        obstaclesTexture.filterMode = FilterMode.Point;
-        obstaclesTexture.wrapMode = TextureWrapMode.Clamp;
-        obstaclesTexture.Create();
+        createRenderTextures(GUITexture, RenderTextureFormat.ARGB32, FilterMode.Bilinear, TextureWrapMode.Clamp, false);
+        createRenderTextures(divergenceTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, true);
+        createRenderTextures(obstaclesTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, true);
 
         velocityTexture = new RenderTexture[2];
         createMultiRenderTextures(velocityTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
@@ -71,6 +60,17 @@ public class Fluids : MonoBehaviour {
         GUI.texture = GUITexture;
         GUIMat.SetTexture("Obstacles", obstaclesTexture);
 	}
+
+    void createRenderTextures(RenderTexture texture, RenderTextureFormat format, FilterMode filter, TextureWrapMode wrap, bool isReadWrite)
+    {
+        if(isReadWrite)
+            texture = new RenderTexture((int)viewWidth, (int)viewHeight, 0, format, RenderTextureReadWrite.Linear);
+        else
+            texture = new RenderTexture((int)viewWidth, (int)viewHeight, 0, format);
+        texture.filterMode = filter;
+        texture.wrapMode = wrap;
+        texture.Create();
+    }
 
     void createMultiRenderTextures(RenderTexture[] texture, RenderTextureFormat format, FilterMode filter, TextureWrapMode wrap, RenderTextureReadWrite readWrite)
     {
