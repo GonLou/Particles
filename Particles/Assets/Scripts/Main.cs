@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Main : MonoBehaviour {
 
-    int maxParticlesNumber = 100;
+    int maxParticlesNumber = 50;
 
     public bool isAutoFeed = true;
 
@@ -119,7 +119,7 @@ public class Main : MonoBehaviour {
                     particleIndex = i;
                 }
 
-                //if (isColliding(pparticle.transform, particleObjects[i].transform)) calculateRebound(pparticle.transform);
+                if (isColliding(pparticle.transform, particleObjects[i].transform)) calculateRebound(pparticle.transform);
             }
         }
         return particleIndex;
@@ -140,7 +140,7 @@ public class Main : MonoBehaviour {
                                   (iParticle.position.z - other.position.z) * (iParticle.position.z - other.position.z));
 
         if (distance < (radius + radius)) return true;
-        Debug.Log(distance);
+        //Debug.Log(distance);
         return false;
     }
 }
