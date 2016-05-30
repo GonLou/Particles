@@ -1,41 +1,53 @@
 ﻿Shader "Custom/buoyancyShader" {
-	Properties {
-		_Color ("Color", Color) = (1,1,1,1)
-		_MainTex ("Albedo (RGB)", 2D) = "white" {}
-		_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		_Metallic ("Metallic", Range(0,1)) = 0.0
-	}
-	SubShader {
-		Tags { "RenderType"="Opaque" }
-		LOD 200
-		
-		CGPROGRAM
-		// Physically based Standard lighting model, and enable shadows on all light types
-		#pragma surface surf Standard fullforwardshadows
+	SubShader{
+		Pass
+		{
+			ZTest Always
+			Name "Buoyancy"
+			CGPROGRAM
+#include "UnityCG.cginc"
+#pragma target 3.0
+#pragma vertex vert
+#pragma fragment frag
 
-		// Use shader model 3.0 target, to get nicer looking lighting
-		#pragma target 3.0
+			uniform sampler2D Velocity;
+			uniform sampler2D Temperature;
+			uniform sampler2D Density;
+			uniform float AmbientTemperature;
+			uniform float TimeStep;
+			uniform float Sigma;
+			uniform float Kappa;
 
-		sampler2D _MainTex;
+			struct v2f
+			{
+				float4 pos : SV_POSITION;
+				float2 uv : TEXCOORD0;
+			};
 
-		struct Input {
-			float2 uv_MainTex;
-		};
+			v2f vert(appdata_base v)
+			{
+				v2f o;
+				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.uv = v.texcoord.xy;
+				return o;
+			}
 
-		half _Glossiness;
-		half _Metallic;
-		fixed4 _Color;
+			float4 frag(v2f IN) : COLOR
+			{
+				float2 fragCoord = IN.uv;
+				float T = tex2D(Temperature, fragCoord).x;
+				float2 V = tex2D(Velocity, fragCoord).xy;
 
-		void surf (Input IN, inout SurfaceOutputStandard o) {
-			// Albedo comes from a texture tinted by color
-			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-			o.Albedo = c.rgb;
-			// Metallic and smoothness come from slider variables
-			o.Metallic = _Metallic;
-			o.Smoothness = _Glossiness;
-			o.Alpha = c.a;
+					float2 result = V;
+					if (T > AmbientTemperature)
+					{
+						float D = tex2D(Density, fragCoord).x;
+						result += (TimeStep * (T - AmbientTemperature) * Sigma - D * Kappa) * float2(0, 1);
+					}
+
+				return float4(result, 0, 1);
+			}
+				ENDCG
 		}
-		ENDCG
 	}
-	FallBack "Diffuse"
 }

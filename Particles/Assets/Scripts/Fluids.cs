@@ -7,7 +7,7 @@ public class Fluids : MonoBehaviour {
     RenderTexture GUITexture, divergenceTexture, obstaclesTexture;
     RenderTexture[] velocityTexture, densityTexture, pressureTexture, temperatureTexture;
 
-    const float cellSize = 1.25f;
+    const float cellSize = 1.0f;
 
     const float ambientTemperature = 0.0f;
     const float impulseTemperature = 10.0f;
@@ -22,12 +22,12 @@ public class Fluids : MonoBehaviour {
     const float densityDissipation = 0.9999f;
 
     Vector2 impulsePosition = new Vector2(0.5f, 0.0f);
-    float inpulseSize = 0.1f;
+    float impulseSize = 0.1f;
 
     Vector2 obstaclePosition = new Vector2(0.5f, 0.5f);
     float obstacleSize = 0.1f;
 
-    GUITexture GUI;
+    GUITexture GUI_tex;
     
     int viewWidth, viewHeight;
     Vector2 inverseSize;
@@ -35,10 +35,10 @@ public class Fluids : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        GUI = GetComponent<GUITexture>();
+        GUI_tex = GetComponent<GUITexture>();
 
-        viewWidth = (int)GUI.pixelInset.width;
-        viewHeight = (int)GUI.pixelInset.height;
+        viewWidth = (int)GUI_tex.pixelInset.width;
+        viewHeight = (int)GUI_tex.pixelInset.height;
         inverseSize = new Vector2(1.0f / viewWidth, 1.0f / viewHeight);
 
         GUITexture = new RenderTexture(viewWidth, viewHeight, 0, RenderTextureFormat.ARGB32);
@@ -189,8 +189,8 @@ public class Fluids : MonoBehaviour {
 
         swapTextures(velocityTexture);
 
-        ApplyImpulse(temperatureTexture[READ], temperatureTexture[WRITE], impulsePosition, inpulseSize, impulseTemperature);
-        ApplyImpulse(densityTexture[READ], densityTexture[WRITE], impulsePosition, inpulseSize, impulseDensity);
+        ApplyImpulse(temperatureTexture[READ], temperatureTexture[WRITE], impulsePosition, impulseSize, impulseTemperature);
+        ApplyImpulse(densityTexture[READ], densityTexture[WRITE], impulsePosition, impulseSize, impulseDensity);
 
         swapTextures(temperatureTexture);
         swapTextures(densityTexture);

@@ -22,7 +22,6 @@
 		Obstacles ("Obstacles", 2D) = "" {}
 		Temperature ("Temperature", 2D) = "" {}
 		Density ("Density", 2D) = "" {}
-		SourceTexture ("Source Texture", 2D) = "" {}
 		Pressure ("Pressure", 2D) = "" {}
 		Divergence ("Divergence", 2D) = "" {}
 	}
