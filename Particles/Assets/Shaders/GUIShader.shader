@@ -1,20 +1,22 @@
 ﻿Shader "Custom/GUIShader" {
-	Properties 
+	Properties
 	{
-		MainTex ("Albedo (RGB)", 2D) = "white" {}
+		_MainTex("Base (RGB)", 2D) = "white" {}
 	}
-	SubShader 
+		SubShader
 	{
 		Pass
 		{
-			CGPROGRAM
-			#include "UnityCG.cginc"
-			#pragma target 3.0
-			#pragma vertex vert
-			#pragma fragment frag
+			ZTest Always
 
-			sampler2D MainTex;
-			uniform sampler2D Obstacles;
+			CGPROGRAM
+#include "UnityCG.cginc"
+#pragma target 3.0
+#pragma vertex vert
+#pragma fragment frag
+
+			sampler2D _MainTex;
+			uniform sampler2D _Obstacles;
 
 			struct v2f
 			{
@@ -32,9 +34,9 @@
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float col = tex2D(MainTex, IN.uv).x;
+				float col = tex2D(_MainTex, IN.uv).x;
 
-				float obs = tex2D(Obstacles, IN.uv).x;
+				float obs = tex2D(_Obstacles, IN.uv).x;
 
 				float3 result = float3(obs, obs, obs);
 
@@ -42,7 +44,9 @@
 
 				return float4(result, 1);
 			}
-			ENDCG
+
+				ENDCG
+
 		}
 	}
 }

@@ -3,33 +3,32 @@
 	Properties 
 	{
 		InverseSize ("Inverse Size", Vector) = (0.0,0.0,0.0,0.0)
-		Point("Point", Vector) = (0.0, 0.0, 0.0, 0.0)
+		Point ("Point", Vector) = (0.0, 0.0, 0.0, 0.0)
 
 		TimeStep ("Time Step", Float) = 0.0
-		Dissipation("Dissipation", Float) = 0.0
-		AmbientTemperature("AmbientTemperature", Float) = 0.0
-		Sigma("Sigma", Float) = 0.0
-		Kappa("Kappa", Float) = 0.0
-		Radius("Radius", Float) = 0.0
-		Fill("Fill", Float) = 0.0
-		HalfInverseCellSize("Half Inverse Cell Size", Float) = 0.0
-		Alpha("Alpha", Float) = 0.0
-		InverseBeta("Inverse Beta", Float) = 0.0
-		Gradient Scale("Gradient Scale", Float) = 0.0
+		Dissipation ("Dissipation", Float) = 0.0
+		AmbientTemperature ("AmbientTemperature", Float) = 0.0
+		Sigma ("Sigma", Float) = 0.0
+		Kappa ("Kappa", Float) = 0.0
+		Radius ("Radius", Float) = 0.0
+		Fill ("Fill", Float) = 0.0
+		HalfInverseCellSize ("Half Inverse Cell Size", Float) = 0.0
+		Alpha ("Alpha", Float) = 0.0
+		InverseBeta ("Inverse Beta", Float) = 0.0
+		GradientScale ("Gradient Scale", Float) = 0.0
 
-		Velocity("Velocity", 2D) = "" {}
-		Source("Source", 2D) = "" {}
-		Obstacles("Obstacles", 2D) = "" {}
-		Temperature("Temperature", 2D) = "" {}
-		Density("Density", 2D) = "" {}
-		Source("Source", 2D) = "" {}
-		Pressure("Pressure", 2D) = "" {}
-		Divergence("Divergence", 2D) = "" {}
+		Velocity ("Velocity", 2D) = "" {}
+		SourceTexture ("Source Texture", 2D) = "" {}
+		Obstacles ("Obstacles", 2D) = "" {}
+		Temperature ("Temperature", 2D) = "" {}
+		Density ("Density", 2D) = "" {}
+		SourceTexture ("Source Texture", 2D) = "" {}
+		Pressure ("Pressure", 2D) = "" {}
+		Divergence ("Divergence", 2D) = "" {}
 	}
 
 	SubShader 
 	{
-		
 		Pass //Advect
 		{
 			Name "Advect"
@@ -268,7 +267,7 @@
 			uniform float2 Point;
 			uniform float Radius;
 			uniform float Fill;
-			uniform sampler2D Source;
+			uniform sampler2D SourceTexture;
 
 			struct v2f
 			{
@@ -295,7 +294,7 @@
 					impulse = min(a, 10);
 				}
 
-				float source = tex2D(Source, IN.uv).x;
+				float source = tex2D(SourceTexture, IN.uv).x;
 
 				return max(0, lerp(source, Fill, impulse)).xxxx;
 			}
