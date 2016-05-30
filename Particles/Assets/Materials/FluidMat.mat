@@ -7,10 +7,10 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: FluidMat
-  m_Shader: {fileID: 4800000, guid: 7351e2799ddd15f49b387af3d4c3d38a, type: 3}
+  m_Shader: {fileID: 4800000, guid: d7448177655e35549b70a4534d81c7c2, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
