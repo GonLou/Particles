@@ -71,8 +71,16 @@ public class Fluids : MonoBehaviour {
         createMultiRenderTextures(pressureTexture, RenderTextureFormat.RFloat, FilterMode.Point, TextureWrapMode.Clamp, RenderTextureReadWrite.Linear);
         GetComponent<GUITexture>().texture = GUITexture;
         GUIMat.SetTexture("_Obstacles", obstaclesTexture);
+
+        obstacle = top = bottom = left = right = true;
+        obstaclesMat.SetFloat("_Active", obstacle.GetHashCode());
+        obstaclesMat.SetFloat("_Top", top.GetHashCode());
+        obstaclesMat.SetFloat("_Bottom", bottom.GetHashCode());
+        obstaclesMat.SetFloat("_Left", left.GetHashCode());
+        obstaclesMat.SetFloat("_Right", right.GetHashCode());
 	}
 
+    //Used to created an array of RenderTextures
     void createMultiRenderTextures(RenderTexture[] texture, RenderTextureFormat format, FilterMode filter, TextureWrapMode wrap, RenderTextureReadWrite readWrite)
     {
         for (int i = 0; i < texture.Length; i++)
@@ -84,6 +92,7 @@ public class Fluids : MonoBehaviour {
         }
     }
 	
+    //Swap textures around
     void swapTextures(RenderTexture[] texture)
     {
         RenderTexture temp = texture[0];
@@ -91,6 +100,7 @@ public class Fluids : MonoBehaviour {
         texture[1] = temp;
     }
 
+    //Clear all data from texture
     void clearTexture(RenderTexture texture)
     {
         Graphics.SetRenderTarget(texture);
@@ -98,6 +108,7 @@ public class Fluids : MonoBehaviour {
         Graphics.SetRenderTarget(null);
     }
 
+    //Calculate advection
     void ApplyAdvect(RenderTexture velocity, RenderTexture source, RenderTexture destination, float dissipation)
     {
         advectMat.SetVector("_InverseSize", inverseSize);
@@ -110,6 +121,7 @@ public class Fluids : MonoBehaviour {
         Graphics.Blit(null, destination, advectMat);
     }
 
+    //Calculate buoyancy
     void ApplyBuoyancy(RenderTexture velocity, RenderTexture temperature, RenderTexture density, RenderTexture destination)
     {
         buoyancyMat.SetTexture("_Velocity", velocity);
@@ -123,6 +135,7 @@ public class Fluids : MonoBehaviour {
         Graphics.Blit(null, destination, buoyancyMat);
     }
 
+    //Calculate impulse
     void ApplyImpulse(RenderTexture source, RenderTexture destination, Vector2 position, float radius, float val)
     {
         impulseMat.SetVector("_Point", position);
@@ -134,6 +147,7 @@ public class Fluids : MonoBehaviour {
         Graphics.Blit(null, destination, impulseMat);
     }
 
+    //Calculate divergence
     void ApplyDivergence(RenderTexture velocity, RenderTexture destination)
     {
         divergenceMat.SetFloat("_HalfInverseCellSize", 0.5f / cellSize);
@@ -144,6 +158,7 @@ public class Fluids : MonoBehaviour {
         Graphics.Blit(null, destination, divergenceMat);
     }
 
+    //Calcualte Jacobi iteration
     void ApplyJacobi(RenderTexture pressure, RenderTexture divergence, RenderTexture destination)
     {
         jacobiMat.SetTexture("_Pressure", pressure);
@@ -156,6 +171,7 @@ public class Fluids : MonoBehaviour {
         Graphics.Blit(null, destination, jacobiMat);
     }
 
+    //Calcualte gradient
     void ApplySutraction(RenderTexture velocity, RenderTexture pressure, RenderTexture destination)
     {
         gradientMat.SetTexture("_Velocity", velocity);
@@ -167,6 +183,7 @@ public class Fluids : MonoBehaviour {
         Graphics.Blit(null, destination, gradientMat);
     }
 
+    //Add obstacles
     void CreateObstacles()
     {       
         obstaclesMat.SetVector("_InverseSize", inverseSize);
@@ -178,6 +195,7 @@ public class Fluids : MonoBehaviour {
 
     void UserInputs()
     {
+        //Move the fluid position
         if (Input.GetMouseButton(0))
         {
             Vector2 pos = Input.mousePosition;
@@ -193,6 +211,7 @@ public class Fluids : MonoBehaviour {
             CreateObstacles();
         }
 
+        //Moce the obstacle position
         if (Input.GetMouseButton(1))
         {
             Vector2 pos = Input.mousePosition;
@@ -236,7 +255,8 @@ public class Fluids : MonoBehaviour {
             right = !right;
             obstaclesMat.SetFloat("_Right", right.GetHashCode());
         }
-
+        
+        //Obstacle size decrease
         if(Input.GetKey(KeyCode.LeftArrow))
         {
             if (obstacleSize > 0.01f)
@@ -245,6 +265,7 @@ public class Fluids : MonoBehaviour {
                 obstacleSize = 0.01f;
         }
 
+        //Obstacle size increase
         if (Input.GetKey(KeyCode.RightArrow))
         {
             if (obstacleSize < 0.09f)
@@ -253,6 +274,7 @@ public class Fluids : MonoBehaviour {
                 obstacleSize = 0.1f;
         }
 
+        //Fluid size decrease
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (impulseSize > 0.06f)
@@ -261,6 +283,7 @@ public class Fluids : MonoBehaviour {
                 impulseSize = 0.05f;
         }
 
+        //Fluid size increase
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (impulseSize < 0.09f)
@@ -273,8 +296,12 @@ public class Fluids : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         CreateObstacles();
+
+        //Used to differenciate between RenderTextures
         int READ = 0;
         int WRITE = 1;
+
+        //Advection of the velocity, temperature and density
         ApplyAdvect(velocityTexture[READ], velocityTexture[READ], velocityTexture[WRITE], velocityDissipation);
         ApplyAdvect(velocityTexture[READ], temperatureTexture[READ], temperatureTexture[WRITE], temperatureDissipation);
         ApplyAdvect(velocityTexture[READ], densityTexture[READ], densityTexture[WRITE], densityDissipation);
@@ -283,18 +310,22 @@ public class Fluids : MonoBehaviour {
         swapTextures(temperatureTexture);
         swapTextures(densityTexture);
 
+        //How the flow of the fluid changes the velocity
         ApplyBuoyancy(velocityTexture[READ], temperatureTexture[READ], densityTexture[READ], velocityTexture[WRITE]);
 
         swapTextures(velocityTexture);
 
+        //Refresh the impulse of density and temperature
         ApplyImpulse(temperatureTexture[READ], temperatureTexture[WRITE], impulsePosition, impulseSize, impulseTemperature);
         ApplyImpulse(densityTexture[READ], densityTexture[WRITE], impulsePosition, impulseSize, impulseDensity);
 
         swapTextures(temperatureTexture);
         swapTextures(densityTexture);
 
+        //User inputs
         UserInputs();
 
+        //Calculates the divergence of the velocity
         ApplyDivergence(velocityTexture[READ], divergenceTexture);
 
         clearTexture(pressureTexture[READ]);
@@ -311,7 +342,7 @@ public class Fluids : MonoBehaviour {
 
         swapTextures(velocityTexture);
 
-        //Render the rex you want to see into gui tex. Will only use the red channel
+        //Render the tex you want to see into gui tex. Will only use the red channel
         Graphics.Blit(densityTexture[READ], GUITexture, GUIMat);
 
 	}

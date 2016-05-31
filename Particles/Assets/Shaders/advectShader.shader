@@ -40,7 +40,8 @@
 				float4 result = _Dissipation * tex2D(_Source, coord);
 				float solid = tex2D(_Obstacles, IN.uv).x;
 
-				if (solid > 0.0) result = float4(0, 0, 0, 0);
+				if (solid > 0.0) 
+					result = float4(0, 0, 0, 0);
 
 				return result;
 			}
