@@ -3,23 +3,18 @@ using System.Collections;
 
 public class SelfDestroy : MonoBehaviour
 {
-    //Main lifespan;
+    Main lifespan;
     float lifetime = 3;
     private float startTime;
 
-    void Awake()
+    void Start()
     {
-        //lifespan = transform.root.GetComponent<Main>();
-        //lifespan.par
-    }
-
-    void OnEnable()
-    {
+        lifespan = GameObject.Find("Emitter").GetComponent<Main>();
+        //lifetime = lifespan.myLife;
         startTime = Time.timeSinceLevelLoad;
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if ((startTime + lifetime) < Time.timeSinceLevelLoad)
             Destroy(gameObject);

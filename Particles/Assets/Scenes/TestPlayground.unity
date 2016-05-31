@@ -158,7 +158,7 @@ GameObject:
   m_Layer: 0
   m_Name: Emitter
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -173,9 +173,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9af9a4f9cc67654f9a6aa5c44196376, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxParticlesNumber: 10
   isAutoFeed: 1
-  prefabObject: {fileID: 181868, guid: 8c674144afa67ab419c3b1b75e3ab229, type: 2}
+  prefabObject: {fileID: 148398, guid: af56b7205d609e140b18c6c70e629691, type: 2}
 --- !u!4 &1092590848
 Transform:
   m_ObjectHideFlags: 0
@@ -183,7 +182,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1092590846}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -31.96}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -203,7 +202,7 @@ GameObject:
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -246,7 +245,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 50
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -268,9 +267,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1802834719}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -265.83}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0.009444236, y: 0.56341714, z: -0.0064412137, w: 0.8260935}
+  m_LocalPosition: {x: -60.8, y: 19, z: -24.5}
+  m_LocalScale: {x: 1.0269043, y: 1, z: 0.8644302}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
