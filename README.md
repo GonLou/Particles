@@ -1,3 +1,9 @@
+Youtube video links:
+https://www.youtube.com/watch?v=wP4cL8f__EQ
+https://www.youtube.com/watch?v=097ADFB5N9Y
+https://www.youtube.com/watch?v=ymu5IT7RG3o
+https://www.youtube.com/watch?v=nA0eNlZehjI
+
 Fluid simulation
 
 User Controls
