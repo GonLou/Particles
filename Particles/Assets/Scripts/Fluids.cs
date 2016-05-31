@@ -270,7 +270,6 @@ public class Fluids : MonoBehaviour {
         }
     }
 
-
 	// Update is called once per frame
 	void Update () {
         CreateObstacles();

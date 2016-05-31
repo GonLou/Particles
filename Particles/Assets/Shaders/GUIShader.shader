@@ -10,10 +10,10 @@
 			ZTest Always
 
 			CGPROGRAM
-#include "UnityCG.cginc"
-#pragma target 3.0
-#pragma vertex vert
-#pragma fragment frag
+			#include "UnityCG.cginc"
+			#pragma target 3.0
+			#pragma vertex vert
+			#pragma fragment frag
 
 			sampler2D _MainTex;
 			uniform sampler2D _Obstacles;
@@ -34,19 +34,19 @@
 
 			float4 frag(v2f IN) : COLOR
 			{
-				float col = tex2D(_MainTex, IN.uv).x;
+				float2 fragCoord = IN.uv;
+				float col = tex2D(_MainTex, fragCoord).x;
 
-				float obs = tex2D(_Obstacles, IN.uv).x;
+				float obs = tex2D(_Obstacles, fragCoord).x;
 
 				float3 result = float3(obs, obs, obs);
 
-					result.x += col;
+				result.x += col;
 
 				return float4(result, 1);
+
 			}
-
-				ENDCG
-
+			ENDCG
 		}
 	}
 }
