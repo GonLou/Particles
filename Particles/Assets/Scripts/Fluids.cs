@@ -17,7 +17,7 @@ public class Fluids : MonoBehaviour {
     const float timeStep = 0.125f;
     const float smokeBuoyancy = 1.0f;
     const float smokeWeight = 0.05f;
-    const float gradientScale = 1.125f / cellSize;
+    const float gradientScale = 1.0f;
     const float temperatureDissipation = 0.99f;
     const float velocityDissipation = 0.99f;
     const float densityDissipation = 0.9999f;
@@ -176,31 +176,24 @@ public class Fluids : MonoBehaviour {
         Graphics.Blit(null, obstaclesTexture, obstaclesMat);
     }
 
+    void UserInputs()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            Vector2 pos = Input.mousePosition;
 
-	// Update is called once per frame
-	void Update () {
-        CreateObstacles();
-        int READ = 0;
-        int WRITE = 1;
-        ApplyAdvect(velocityTexture[READ], velocityTexture[READ], velocityTexture[WRITE], velocityDissipation);
-        ApplyAdvect(velocityTexture[READ], temperatureTexture[READ], temperatureTexture[WRITE], temperatureDissipation);
-        ApplyAdvect(velocityTexture[READ], densityTexture[READ], densityTexture[WRITE], densityDissipation);
+            pos.x -= Screen.width * 0.5f;
+            pos.y -= Screen.height * 0.5f;
 
-        swapTextures(velocityTexture);
-        swapTextures(temperatureTexture);
-        swapTextures(densityTexture);
+            pos -= offSet;
 
-        ApplyBuoyancy(velocityTexture[READ], temperatureTexture[READ], densityTexture[READ], velocityTexture[WRITE]);
+            pos.x /= viewWidth - 1.0f;
+            pos.y /= viewHeight - 1.0f;
+            impulsePosition = new Vector2(pos.x, pos.y);
+            CreateObstacles();
+        }
 
-        swapTextures(velocityTexture);
-
-        ApplyImpulse(temperatureTexture[READ], temperatureTexture[WRITE], impulsePosition, impulseSize, impulseTemperature);
-        ApplyImpulse(densityTexture[READ], densityTexture[WRITE], impulsePosition, impulseSize, impulseDensity);
-
-        swapTextures(temperatureTexture);
-        swapTextures(densityTexture);
-
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButton(1))
         {
             Vector2 pos = Input.mousePosition;
 
@@ -212,7 +205,7 @@ public class Fluids : MonoBehaviour {
             pos.x /= viewWidth - 1.0f;
             pos.y /= viewHeight - 1.0f;
             obstaclePosition = new Vector2(pos.x, pos.y);
-
+            CreateObstacles();
         }
 
         //Enable or disable walls and obstacles
@@ -243,6 +236,65 @@ public class Fluids : MonoBehaviour {
             right = !right;
             obstaclesMat.SetFloat("_Right", right.GetHashCode());
         }
+
+        if(Input.GetKey(KeyCode.LeftArrow))
+        {
+            if (obstacleSize > 0.01f)
+                obstacleSize -= 0.01f;
+            else
+                obstacleSize = 0.01f;
+        }
+
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            if (obstacleSize < 0.09f)
+                obstacleSize += 0.01f;
+            else
+                obstacleSize = 0.1f;
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (impulseSize > 0.06f)
+                impulseSize -= 0.01f;
+            else
+                impulseSize = 0.05f;
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if (impulseSize < 0.09f)
+                impulseSize += 0.01f;
+            else
+                impulseSize = 0.1f;
+        }
+    }
+
+
+	// Update is called once per frame
+	void Update () {
+        CreateObstacles();
+        int READ = 0;
+        int WRITE = 1;
+        ApplyAdvect(velocityTexture[READ], velocityTexture[READ], velocityTexture[WRITE], velocityDissipation);
+        ApplyAdvect(velocityTexture[READ], temperatureTexture[READ], temperatureTexture[WRITE], temperatureDissipation);
+        ApplyAdvect(velocityTexture[READ], densityTexture[READ], densityTexture[WRITE], densityDissipation);
+
+        swapTextures(velocityTexture);
+        swapTextures(temperatureTexture);
+        swapTextures(densityTexture);
+
+        ApplyBuoyancy(velocityTexture[READ], temperatureTexture[READ], densityTexture[READ], velocityTexture[WRITE]);
+
+        swapTextures(velocityTexture);
+
+        ApplyImpulse(temperatureTexture[READ], temperatureTexture[WRITE], impulsePosition, impulseSize, impulseTemperature);
+        ApplyImpulse(densityTexture[READ], densityTexture[WRITE], impulsePosition, impulseSize, impulseDensity);
+
+        swapTextures(temperatureTexture);
+        swapTextures(densityTexture);
+
+        UserInputs();
 
         ApplyDivergence(velocityTexture[READ], divergenceTexture);
 
