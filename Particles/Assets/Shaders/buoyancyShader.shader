@@ -42,7 +42,7 @@
 				if (T > _AmbientTemperature)
 				{
 					float D = tex2D(_Density, IN.uv).x;
-					result += (_TimeStep * (T - _AmbientTemperature) * _Sigma - D * _Kappa) * float2(0, 1);
+					result += (_TimeStep * (T - _AmbientTemperature) * _Sigma - D * _Kappa) * float2(1, 1);
 				}
 
 				return float4(result, 0, 1);
